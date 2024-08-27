@@ -21,7 +21,13 @@ services:
     volumes:
       - postgres_data:/var/lib/postgresql/data
     restart: always
-
+  apache:
+    image: httpd:latest
+    container_name: my-apache-app
+    ports:
+    - '8085:80'
+    volumes:
+    - ./report_front_end:/usr/local/apache2/htdocs
   # pgadmin:
   #   image: dpage/pgadmin4
   #   environment:
