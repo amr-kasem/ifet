@@ -31,7 +31,7 @@ To get started with the project, follow these steps:
    - **ReDoc:** `http://localhost:8000/redoc`
 
    The FastAPI server will be available on port 8000.
-   
+
 4. **Frontend Integration:**
 
    Place your frontend code in the `report_front_end` directory. Ensure that any necessary build steps or configurations specific to the frontend are completed as required for your project. 
@@ -39,9 +39,7 @@ To get started with the project, follow these steps:
    Once integrated, the frontend will be accessible at `http://localhost:8085`.
 
 ## Notes
-
-- Ensure that you have a `.env` file or the necessary environment variables configured in the Docker Compose file for database connections and other settings.
-- If you need to stop the application, use `docker-compose down` to stop and remove the containers.
+- If you need to stop the application, use `docker compose down` to stop and remove the containers.
 
 ## License
 
