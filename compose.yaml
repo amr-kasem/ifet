@@ -1,0 +1,43 @@
+services:
+  api:
+    build: ./report_service/
+    container_name: report_service
+    environment:
+      PORT: 8000
+      POSTGRES_DB: report_db
+      DATABASE_URL: "postgresql://user:password@db:5432/report_db"
+    ports:
+      - '8000:8000'
+    depends_on:
+      - db
+    restart: always
+
+
+  db:
+    image: postgres:13
+    environment:
+      POSTGRES_DB: report_db
+      POSTGRES_USER: user
+      POSTGRES_PASSWORD: password
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    restart: always
+
+  # pgadmin:
+  #   image: dpage/pgadmin4
+  #   environment:
+  #     PGADMIN_DEFAULT_EMAIL: admin@admin.com
+  #     PGADMIN_DEFAULT_PASSWORD: admin
+  #   ports:
+  #     - "8080:80"
+  #   depends_on:
+  #     - db
+  #   volumes:
+  #     - pgadmin_data:/var/lib/pgadmin
+  #   restart: always
+
+volumes:
+  postgres_data:
+    driver: local
+  # pgadmin_data:
+  #   driver: local
