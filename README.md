@@ -21,7 +21,7 @@ To get started with the project, follow these steps:
    Ensure you have Docker and Docker Compose installed. Run the following command to build and start the application:
 
    ```bash
-   docker-compose up
+   docker compose up
 
 3. **Access the Application:**
 
