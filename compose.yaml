@@ -1,4 +1,5 @@
 services:
+
   report-api:
     build: ./report_service/
     environment:
@@ -11,7 +12,6 @@ services:
       - db
     restart: always
 
-
   db:
     image: postgres:13
     environment:
@@ -21,6 +21,7 @@ services:
     volumes:
       - postgres_data:/var/lib/postgresql/data
     restart: always
+
   apache:
     image: httpd:latest
     container_name: my-apache-app
