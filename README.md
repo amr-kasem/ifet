@@ -13,8 +13,8 @@ To get started with the project, follow these steps:
 1. **Clone the Repository:**
 
    ```bash
-   git clone https://github.com/your-username/your-repository.git
-   cd your-repository
+   git clone https://github.com/amr-kasem/ifet.git
+   cd ifet
 
 2. **Start the Application:**
 
