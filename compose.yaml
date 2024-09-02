@@ -29,21 +29,21 @@ services:
     - '8085:80'
     volumes:
     - ./report_front_end:/usr/local/apache2/htdocs
-  # pgadmin:
-  #   image: dpage/pgadmin4
-  #   environment:
-  #     PGADMIN_DEFAULT_EMAIL: admin@admin.com
-  #     PGADMIN_DEFAULT_PASSWORD: admin
-  #   ports:
-  #     - "8080:80"
-  #   depends_on:
-  #     - db
-  #   volumes:
-  #     - pgadmin_data:/var/lib/pgadmin
-  #   restart: always
+  pgadmin:
+    image: dpage/pgadmin4
+    environment:
+      PGADMIN_DEFAULT_EMAIL: admin@admin.com
+      PGADMIN_DEFAULT_PASSWORD: admin
+    ports:
+      - "8080:80"
+    depends_on:
+      - db
+    volumes:
+      - pgadmin_data:/var/lib/pgadmin
+    restart: always
 
 volumes:
   postgres_data:
     driver: local
-  # pgadmin_data:
-  #   driver: local
+  pgadmin_data:
+    driver: local

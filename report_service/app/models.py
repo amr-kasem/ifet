@@ -1,6 +1,5 @@
 from sqlalchemy import Column, Integer, String, Float, ForeignKey, Boolean
 from sqlalchemy.orm import relationship, declarative_base
-from sqlalchemy import create_engine, inspect
 
 Base = declarative_base()
 
@@ -9,6 +8,7 @@ class Project(Base):
 
     id = Column(Integer, primary_key=True, index=True)
     name = Column(String, nullable=False)
+    device_id = Column(Integer, nullable=False)  # Added device_id field
 
     static_tests = relationship("StaticTest", back_populates="project", cascade="all, delete-orphan")
     infiltration_tests = relationship("InfiltrationTest", back_populates="project", cascade="all, delete-orphan")

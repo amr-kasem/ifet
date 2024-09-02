@@ -75,6 +75,7 @@ class CyclicTestSchema(CyclicTestCreateSchema):
 
 class ProjectCreateSchema(BaseModel):
     name: str
+    device_id: int  # New field added
 
         
 class ProjectSchema(ProjectCreateSchema):
