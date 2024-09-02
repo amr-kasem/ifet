@@ -26,6 +26,15 @@ def get_db():
 
 app = FastAPI()
 
+
+
+@app.get("/devices/{device_id}/projects", response_model=List[ProjectSchema])
+def get_projects_by_device_id(device_id: int, db: Session = Depends(get_db)):
+    projects = db.query(Project).filter(Project.device_id == device_id).all()
+    if not projects:
+        raise HTTPException(status_code=404, detail="No projects found for this device_id")
+    return projects
+    
 # List all projects
 @app.get("/projects/", response_model=List[ProjectSchema])
 def list_projects(db: Session = Depends(get_db)):
