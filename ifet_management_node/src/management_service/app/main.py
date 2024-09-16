@@ -70,21 +70,30 @@ def create_project(project: ProjectCreateSchema, db: Session = Depends(get_db)):
         )
         db.add(cyclic_test)
     
+    # Create 6 static tests
+    for _ in range(6):
+        static_test = StaticTest(
+            pressure_factor=0.0,  # Initialize with 0.0
+            pressure=0.0,  # Initialize with 0.0
+            project_id=db_project.id
+        )
+        db.add(static_test)
+    
     db.commit()
     db.refresh(db_project)
     return db_project
 # Add StaticTest to Project
-@app.post("/projects/{project_id}/static-tests/", response_model=StaticTestSchema)
-def add_static_test(project_id: int, static_test_data: StaticTestCreateSchema, db: Session = Depends(get_db)):
-    project = db.query(Project).filter(Project.id == project_id).first()
-    if not project:
-        raise HTTPException(status_code=404, detail="Project not found")
+# @app.post("/projects/{project_id}/static-tests/", response_model=StaticTestSchema)
+# def add_static_test(project_id: int, static_test_data: StaticTestCreateSchema, db: Session = Depends(get_db)):
+#     project = db.query(Project).filter(Project.id == project_id).first()
+#     if not project:
+#         raise HTTPException(status_code=404, detail="Project not found")
     
-    new_static_test = StaticTest(**static_test_data.dict(), project_id=project_id)
-    db.add(new_static_test)
-    db.commit()
-    db.refresh(new_static_test)
-    return new_static_test
+#     new_static_test = StaticTest(**static_test_data.dict(), project_id=project_id)
+#     db.add(new_static_test)
+#     db.commit()
+#     db.refresh(new_static_test)
+#     return new_static_test
 
 # Update a specific StaticTest
 @app.put("/static-tests/{static_test_id}/", response_model=StaticTestSchema)
@@ -99,16 +108,16 @@ def update_static_test(static_test_id: int, static_test_data: StaticTestCreateSc
     db.refresh(static_test)
     return static_test
 
-# Delete a StaticTest
-@app.delete("/static-tests/{static_test_id}/", response_model=dict)
-def delete_static_test(static_test_id: int, db: Session = Depends(get_db)):
-    static_test = db.query(StaticTest).filter(StaticTest.id == static_test_id).first()
-    if not static_test:
-        raise HTTPException(status_code=404, detail="StaticTest not found")
+# # Delete a StaticTest
+# @app.delete("/static-tests/{static_test_id}/", response_model=dict)
+# def delete_static_test(static_test_id: int, db: Session = Depends(get_db)):
+#     static_test = db.query(StaticTest).filter(StaticTest.id == static_test_id).first()
+#     if not static_test:
+#         raise HTTPException(status_code=404, detail="StaticTest not found")
     
-    db.delete(static_test)
-    db.commit()
-    return {"detail": "StaticTest deleted successfully"}
+#     db.delete(static_test)
+#     db.commit()
+#     return {"detail": "StaticTest deleted successfully"}
 
 
 # Create a Deflection within a StaticTest
@@ -150,41 +159,41 @@ def delete_deflection(deflection_id: int, db: Session = Depends(get_db)):
 
 
 # Create an InfiltrationTest within a Project
-@app.post("/projects/{project_id}/infiltration-tests/", response_model=InfiltrationTestSchema)
-def create_infiltration_test(project_id: int, infiltration_test_data: InfiltrationTestCreateSchema, db: Session = Depends(get_db)):
-    project = db.query(Project).filter(Project.id == project_id).first()
-    if not project:
-        raise HTTPException(status_code=404, detail="Project not found")
+# @app.post("/projects/{project_id}/infiltration-tests/", response_model=InfiltrationTestSchema)
+# def create_infiltration_test(project_id: int, infiltration_test_data: InfiltrationTestCreateSchema, db: Session = Depends(get_db)):
+#     project = db.query(Project).filter(Project.id == project_id).first()
+#     if not project:
+#         raise HTTPException(status_code=404, detail="Project not found")
 
-    new_infiltration_test = InfiltrationTest(**infiltration_test_data.dict(), project_id=project_id)
-    db.add(new_infiltration_test)
-    db.commit()
-    db.refresh(new_infiltration_test)
-    return new_infiltration_test
+#     new_infiltration_test = InfiltrationTest(**infiltration_test_data.dict(), project_id=project_id)
+#     db.add(new_infiltration_test)
+#     db.commit()
+#     db.refresh(new_infiltration_test)
+#     return new_infiltration_test
 
 # Update a specific InfiltrationTest
-@app.put("/infiltration-tests/{infiltration_test_id}/", response_model=InfiltrationTestSchema)
-def update_infiltration_test(infiltration_test_id: int, infiltration_test_data: InfiltrationTestCreateSchema, db: Session = Depends(get_db)):
-    infiltration_test = db.query(InfiltrationTest).filter(InfiltrationTest.id == infiltration_test_id).first()
-    if not infiltration_test:
-        raise HTTPException(status_code=404, detail="InfiltrationTest not found")
+# @app.put("/infiltration-tests/{infiltration_test_id}/", response_model=InfiltrationTestSchema)
+# def update_infiltration_test(infiltration_test_id: int, infiltration_test_data: InfiltrationTestCreateSchema, db: Session = Depends(get_db)):
+#     infiltration_test = db.query(InfiltrationTest).filter(InfiltrationTest.id == infiltration_test_id).first()
+#     if not infiltration_test:
+#         raise HTTPException(status_code=404, detail="InfiltrationTest not found")
 
-    for key, value in infiltration_test_data.dict().items():
-        setattr(infiltration_test, key, value)
-    db.commit()
-    db.refresh(infiltration_test)
-    return infiltration_test
+#     for key, value in infiltration_test_data.dict().items():
+#         setattr(infiltration_test, key, value)
+#     db.commit()
+#     db.refresh(infiltration_test)
+#     return infiltration_test
 
 # Delete an InfiltrationTest
-@app.delete("/infiltration-tests/{infiltration_test_id}/", response_model=dict)
-def delete_infiltration_test(infiltration_test_id: int, db: Session = Depends(get_db)):
-    infiltration_test = db.query(InfiltrationTest).filter(InfiltrationTest.id == infiltration_test_id).first()
-    if not infiltration_test:
-        raise HTTPException(status_code=404, detail="InfiltrationTest not found")
+# @app.delete("/infiltration-tests/{infiltration_test_id}/", response_model=dict)
+# def delete_infiltration_test(infiltration_test_id: int, db: Session = Depends(get_db)):
+#     infiltration_test = db.query(InfiltrationTest).filter(InfiltrationTest.id == infiltration_test_id).first()
+#     if not infiltration_test:
+#         raise HTTPException(status_code=404, detail="InfiltrationTest not found")
 
-    db.delete(infiltration_test)
-    db.commit()
-    return {"detail": "InfiltrationTest deleted successfully"}
+#     db.delete(infiltration_test)
+#     db.commit()
+#     return {"detail": "InfiltrationTest deleted successfully"}
 
 
 
@@ -215,90 +224,90 @@ def update_cyclic_test(cyclic_test_id: int, cyclic_test_data: CyclicTestCreateSc
     return cyclic_test
 
 # Delete a CyclicTest
-@app.delete("/cyclic-tests/{cyclic_test_id}/", response_model=dict)
-def delete_cyclic_test(cyclic_test_id: int, db: Session = Depends(get_db)):
-    cyclic_test = db.query(CyclicTest).filter(CyclicTest.id == cyclic_test_id).first()
-    if not cyclic_test:
-        raise HTTPException(status_code=404, detail="CyclicTest not found")
+# @app.delete("/cyclic-tests/{cyclic_test_id}/", response_model=dict)
+# def delete_cyclic_test(cyclic_test_id: int, db: Session = Depends(get_db)):
+#     cyclic_test = db.query(CyclicTest).filter(CyclicTest.id == cyclic_test_id).first()
+#     if not cyclic_test:
+#         raise HTTPException(status_code=404, detail="CyclicTest not found")
 
-    db.delete(cyclic_test)
-    db.commit()
-    return {"detail": "CyclicTest deleted successfully"}
+#     db.delete(cyclic_test)
+#     db.commit()
+#     return {"detail": "CyclicTest deleted successfully"}
 
 
 
 # Create a MissileImpactTest within a Project
-@app.post("/projects/{project_id}/missile-impact-tests/", response_model=MissileImpactTestSchema)
-def create_missile_impact_test(project_id: int, missile_impact_test_data: MissileImpactTestCreateSchema, db: Session = Depends(get_db)):
-    project = db.query(Project).filter(Project.id == project_id).first()
-    if not project:
-        raise HTTPException(status_code=404, detail="Project not found")
+# @app.post("/projects/{project_id}/missile-impact-tests/", response_model=MissileImpactTestSchema)
+# def create_missile_impact_test(project_id: int, missile_impact_test_data: MissileImpactTestCreateSchema, db: Session = Depends(get_db)):
+#     project = db.query(Project).filter(Project.id == project_id).first()
+#     if not project:
+#         raise HTTPException(status_code=404, detail="Project not found")
 
-    new_missile_impact_test = MissileImpactTest(**missile_impact_test_data.dict(), project_id=project_id)
-    db.add(new_missile_impact_test)
-    db.commit()
-    db.refresh(new_missile_impact_test)
-    return new_missile_impact_test
+#     new_missile_impact_test = MissileImpactTest(**missile_impact_test_data.dict(), project_id=project_id)
+#     db.add(new_missile_impact_test)
+#     db.commit()
+#     db.refresh(new_missile_impact_test)
+#     return new_missile_impact_test
 
 # Update a specific MissileImpactTest
-@app.put("/missile-impact-tests/{missile_impact_test_id}/", response_model=MissileImpactTestSchema)
-def update_missile_impact_test(missile_impact_test_id: int, missile_impact_test_data: MissileImpactTestCreateSchema, db: Session = Depends(get_db)):
-    missile_impact_test = db.query(MissileImpactTest).filter(MissileImpactTest.id == missile_impact_test_id).first()
-    if not missile_impact_test:
-        raise HTTPException(status_code=404, detail="MissileImpactTest not found")
+# @app.put("/missile-impact-tests/{missile_impact_test_id}/", response_model=MissileImpactTestSchema)
+# def update_missile_impact_test(missile_impact_test_id: int, missile_impact_test_data: MissileImpactTestCreateSchema, db: Session = Depends(get_db)):
+#     missile_impact_test = db.query(MissileImpactTest).filter(MissileImpactTest.id == missile_impact_test_id).first()
+#     if not missile_impact_test:
+#         raise HTTPException(status_code=404, detail="MissileImpactTest not found")
 
-    for key, value in missile_impact_test_data.dict().items():
-        setattr(missile_impact_test, key, value)
-    db.commit()
-    db.refresh(missile_impact_test)
-    return missile_impact_test
+#     for key, value in missile_impact_test_data.dict().items():
+#         setattr(missile_impact_test, key, value)
+#     db.commit()
+#     db.refresh(missile_impact_test)
+#     return missile_impact_test
 
 # Delete a MissileImpactTest
-@app.delete("/missile-impact-tests/{missile_impact_test_id}/", response_model=dict)
-def delete_missile_impact_test(missile_impact_test_id: int, db: Session = Depends(get_db)):
-    missile_impact_test = db.query(MissileImpactTest).filter(MissileImpactTest.id == missile_impact_test_id).first()
-    if not missile_impact_test:
-        raise HTTPException(status_code=404, detail="MissileImpactTest not found")
+# @app.delete("/missile-impact-tests/{missile_impact_test_id}/", response_model=dict)
+# def delete_missile_impact_test(missile_impact_test_id: int, db: Session = Depends(get_db)):
+#     missile_impact_test = db.query(MissileImpactTest).filter(MissileImpactTest.id == missile_impact_test_id).first()
+#     if not missile_impact_test:
+#         raise HTTPException(status_code=404, detail="MissileImpactTest not found")
 
-    db.delete(missile_impact_test)
-    db.commit()
-    return {"detail": "MissileImpactTest deleted successfully"}
+#     db.delete(missile_impact_test)
+#     db.commit()
+#     return {"detail": "MissileImpactTest deleted successfully"}
 
 # Create a Shot within a MissileImpactTest
-@app.post("/missile-impact-tests/{missile_impact_test_id}/shots/", response_model=ShotSchema)
-def create_shot(missile_impact_test_id: int, shot_data: ShotCreateSchema, db: Session = Depends(get_db)):
-    missile_impact_test = db.query(MissileImpactTest).filter(MissileImpactTest.id == missile_impact_test_id).first()
-    if not missile_impact_test:
-        raise HTTPException(status_code=404, detail="MissileImpactTest not found")
+# @app.post("/missile-impact-tests/{missile_impact_test_id}/shots/", response_model=ShotSchema)
+# def create_shot(missile_impact_test_id: int, shot_data: ShotCreateSchema, db: Session = Depends(get_db)):
+#     missile_impact_test = db.query(MissileImpactTest).filter(MissileImpactTest.id == missile_impact_test_id).first()
+#     if not missile_impact_test:
+#         raise HTTPException(status_code=404, detail="MissileImpactTest not found")
 
-    new_shot = Shot(**shot_data.dict(), missile_impact_test_id=missile_impact_test_id)
-    db.add(new_shot)
-    db.commit()
-    db.refresh(new_shot)
-    return new_shot
+#     new_shot = Shot(**shot_data.dict(), missile_impact_test_id=missile_impact_test_id)
+#     db.add(new_shot)
+#     db.commit()
+#     db.refresh(new_shot)
+#     return new_shot
 
 # Update a specific Shot
-@app.put("/shots/{shot_id}/", response_model=ShotSchema)
-def update_shot(shot_id: int, shot_data: ShotCreateSchema, db: Session = Depends(get_db)):
-    shot = db.query(Shot).filter(Shot.id == shot_id).first()
-    if not shot:
-        raise HTTPException(status_code=404, detail="Shot not found")
+# @app.put("/shots/{shot_id}/", response_model=ShotSchema)
+# def update_shot(shot_id: int, shot_data: ShotCreateSchema, db: Session = Depends(get_db)):
+#     shot = db.query(Shot).filter(Shot.id == shot_id).first()
+#     if not shot:
+#         raise HTTPException(status_code=404, detail="Shot not found")
 
-    for key, value in shot_data.dict().items():
-        setattr(shot, key, value)
-    db.commit()
-    db.refresh(shot)
-    return shot
+#     for key, value in shot_data.dict().items():
+#         setattr(shot, key, value)
+#     db.commit()
+#     db.refresh(shot)
+#     return shot
 
 # Delete a Shot
-@app.delete("/shots/{shot_id}/", response_model=dict)
-def delete_shot(shot_id: int, db: Session = Depends(get_db)):
-    shot = db.query(Shot).filter(Shot.id == shot_id).first()
-    if not shot:
-        raise HTTPException(status_code=404, detail="Shot not found")
+# @app.delete("/shots/{shot_id}/", response_model=dict)
+# def delete_shot(shot_id: int, db: Session = Depends(get_db)):
+#     shot = db.query(Shot).filter(Shot.id == shot_id).first()
+#     if not shot:
+#         raise HTTPException(status_code=404, detail="Shot not found")
 
-    db.delete(shot)
-    db.commit()
-    return {"detail": "Shot deleted successfully"}
+#     db.delete(shot)
+#     db.commit()
+#     return {"detail": "Shot deleted successfully"}
 
 
