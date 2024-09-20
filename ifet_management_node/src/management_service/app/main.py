@@ -6,6 +6,7 @@ from app.models import *
 from app.schema import *
 from app.utils import run_migrations
 
+from fastapi.middleware.cors import CORSMiddleware
 
 
 DATABASE_URL = os.getenv("DATABASE_URL", "postgresql://user:password@localhost/dbname")
@@ -24,7 +25,14 @@ def get_db():
     finally:
         db.close()
 
-app = FastAPI()
+# Add CORS middleware
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],  # Frontend origin
+    allow_credentials=True,
+    allow_methods=["*"],  # Allow all HTTP methods (POST, GET, etc.)
+    allow_headers=["*"],  # Allow all headers
+)
 
 @app.get("/devices/", response_model=List[DeviceSchema])
 def list_devices(db: Session = Depends(get_db)):
@@ -39,17 +47,20 @@ def get_projects_by_device_id(device_id: int, db: Session = Depends(get_db)):
         raise HTTPException(status_code=404, detail="No projects found for this device_id")
     return projects
     
-# List all projects
-@app.get("/projects/", response_model=List[ProjectSchema])
-def list_projects(db: Session = Depends(get_db)):
-    return db.query(Project).all()
+# # List all projects
+# @app.get("/projects/", response_model=List[ProjectSchema])
+# def list_projects(db: Session = Depends(get_db)):
+#     return db.query(Project).all()
 
+@app.post("/devices/{device_id}/projects/", response_model=ProjectSchema)
+def create_project_for_device(device_id: int, project: ProjectCreateSchema, db: Session = Depends(get_db)):
+    device = db.query(Device).filter(Device.id == device_id).first()
+    if not device:
+        raise HTTPException(status_code=404, detail="Device not found")
 
-@app.post("/projects/", response_model=ProjectSchema)
-def create_project(project: ProjectCreateSchema, db: Session = Depends(get_db)):
     db_project = Project(
         name=project.name,
-        device_id=project.device_id,
+        device_id=device_id,
         static_tests=[],
         infiltration_tests=[],
         missile_impact_tests=[],
@@ -63,9 +74,9 @@ def create_project(project: ProjectCreateSchema, db: Session = Depends(get_db)):
     for i in range(8):
         cyclic_test = CyclicTest(
             type="inward" if i < 4 else "outward",
-            cycles=0,  # Initialize with 0 cycles
-            low_pressure=0.0,  # Initialize with 0.0
-            high_pressure=0.0,  # Initialize with 0.0
+            cycles=0,
+            low_pressure=0.0,
+            high_pressure=0.0,
             project_id=db_project.id
         )
         db.add(cyclic_test)
@@ -73,8 +84,8 @@ def create_project(project: ProjectCreateSchema, db: Session = Depends(get_db)):
     # Create 6 static tests
     for _ in range(6):
         static_test = StaticTest(
-            pressure_factor=0.0,  # Initialize with 0.0
-            pressure=0.0,  # Initialize with 0.0
+            pressure_factor=0.0,
+            pressure=0.0,
             project_id=db_project.id
         )
         db.add(static_test)
@@ -82,6 +93,44 @@ def create_project(project: ProjectCreateSchema, db: Session = Depends(get_db)):
     db.commit()
     db.refresh(db_project)
     return db_project
+
+# @app.post("/projects/", response_model=ProjectSchema)
+# def create_project(project: ProjectCreateSchema, db: Session = Depends(get_db)):
+#     db_project = Project(
+#         name=project.name,
+#         device_id=project.device_id,
+#         static_tests=[],
+#         infiltration_tests=[],
+#         missile_impact_tests=[],
+#         cyclic_tests=[],
+#     )
+#     db.add(db_project)
+#     db.commit()
+#     db.refresh(db_project)
+
+#     # Create 8 cyclic tests
+#     for i in range(8):
+#         cyclic_test = CyclicTest(
+#             type="inward" if i < 4 else "outward",
+#             cycles=0,  # Initialize with 0 cycles
+#             low_pressure=0.0,  # Initialize with 0.0
+#             high_pressure=0.0,  # Initialize with 0.0
+#             project_id=db_project.id
+#         )
+#         db.add(cyclic_test)
+    
+#     # Create 6 static tests
+#     for _ in range(6):
+#         static_test = StaticTest(
+#             pressure_factor=0.0,  # Initialize with 0.0
+#             pressure=0.0,  # Initialize with 0.0
+#             project_id=db_project.id
+#         )
+#         db.add(static_test)
+    
+#     db.commit()
+#     db.refresh(db_project)
+#     return db_project
 # Add StaticTest to Project
 # @app.post("/projects/{project_id}/static-tests/", response_model=StaticTestSchema)
 # def add_static_test(project_id: int, static_test_data: StaticTestCreateSchema, db: Session = Depends(get_db)):

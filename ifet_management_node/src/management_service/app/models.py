@@ -55,7 +55,6 @@ class InfiltrationTest(Base):
     pressure = Column(Float, nullable=False)
     duration = Column(Float, nullable=True)
     leakage = Column(Float, nullable=True)
-
     project_id = Column(Integer, ForeignKey('projects.id'))
     project = relationship("Project", back_populates="infiltration_tests")
 
