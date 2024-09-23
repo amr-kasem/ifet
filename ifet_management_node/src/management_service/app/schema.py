@@ -76,11 +76,11 @@ class CyclicTestSchema(CyclicTestCreateSchema):
 
 class ProjectCreateSchema(BaseModel):
     name: str
-    device_id: int  # New field added
 
         
 class ProjectSchema(ProjectCreateSchema):
     id: int
+    device_id: int  # New field added
     static_tests: List[StaticTestSchema]
     infiltration_tests: List[InfiltrationTestSchema]
     missile_impact_tests: List[MissileImpactTestSchema]
