@@ -34,9 +34,22 @@ app.add_middleware(
     allow_headers=["*"],  # Allow all headers
 )
 
+
 @app.get("/devices/", response_model=List[DeviceSchema])
 def list_devices(db: Session = Depends(get_db)):
     return db.query(Device).all()
+
+
+@app.post("/devices/", response_model=DeviceSchema)
+def create_device(device: DeviceCreateSchema, db: Session = Depends(get_db)):
+    db_device = Device(
+        name=device.name,
+    )
+    db.add(db_device)
+    db.commit()
+    db.refresh(db_device)
+    return db_device
+
 
 
 @app.get("/devices/{device_id}/projects", response_model=List[ProjectSchema])
@@ -60,6 +73,8 @@ def create_project_for_device(device_id: int, project: ProjectCreateSchema, db: 
 
     db_project = Project(
         name=project.name,
+        inward_design_pressure=project.inward_design_pressure,
+        outward_design_pressure=project.outward_design_pressure,
         device_id=device_id,
         static_tests=[],
         infiltration_tests=[],
@@ -77,15 +92,17 @@ def create_project_for_device(device_id: int, project: ProjectCreateSchema, db: 
             cycles=0,
             low_pressure=0.0,
             high_pressure=0.0,
+            index=i,
             project_id=db_project.id
         )
         db.add(cyclic_test)
     
     # Create 6 static tests
-    for _ in range(6):
+    for j in range(6):
         static_test = StaticTest(
             pressure_factor=0.0,
             pressure=0.0,
+            index=j,
             project_id=db_project.id
         )
         db.add(static_test)

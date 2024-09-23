@@ -16,7 +16,8 @@ class Project(Base):
     id = Column(Integer, primary_key=True, index=True)
     name = Column(String, nullable=False)
     device_id = Column(Integer, ForeignKey('devices.id'), nullable=False)
-
+    inward_design_pressure = Column(Float, nullable=False)
+    outward_design_pressure = Column(Float, nullable=False)
     device = relationship("Device", back_populates="projects")
     static_tests = relationship("StaticTest", back_populates="project", cascade="all, delete-orphan")
     infiltration_tests = relationship("InfiltrationTest", back_populates="project", cascade="all, delete-orphan")
@@ -27,6 +28,7 @@ class StaticTest(Base):
     __tablename__ = "static_tests"
 
     id = Column(Integer, primary_key=True, index=True)
+    index = Column(Integer, nullable=False)
     pressure_factor = Column(Float, nullable=False)
     pressure = Column(Float, nullable=False)
 
@@ -86,6 +88,7 @@ class CyclicTest(Base):
     __tablename__ = "cyclic_tests"
 
     id = Column(Integer, primary_key=True, index=True)
+    index = Column(Integer, nullable=False)
     type = Column(String, nullable=False)
     cycles = Column(Integer, nullable=False)
     low_pressure = Column(Float, nullable=False)

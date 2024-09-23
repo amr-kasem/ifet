@@ -16,6 +16,7 @@ class DeflectionSchema(DeflectionCreateSchema):
 class StaticTestCreateSchema(BaseModel):
     pressure_factor: float
     pressure: float
+    index: int
 class StaticTestSchema(StaticTestCreateSchema):
     id: int
     deflections: List[DeflectionSchema]
@@ -66,6 +67,7 @@ class CyclicTestCreateSchema(BaseModel):
     
 class CyclicTestSchema(CyclicTestCreateSchema):
     id: int
+    index: int
     deflection: Optional[float]
     permanent_set: Optional[float]
     result: Optional[bool]
@@ -76,8 +78,9 @@ class CyclicTestSchema(CyclicTestCreateSchema):
 
 class ProjectCreateSchema(BaseModel):
     name: str
-
-        
+    inward_design_pressure: float
+    outward_design_pressure: float
+       
 class ProjectSchema(ProjectCreateSchema):
     id: int
     device_id: int  # New field added
