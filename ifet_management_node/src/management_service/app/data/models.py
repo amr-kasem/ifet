@@ -26,12 +26,13 @@ class Project(Base):
 
 class StaticTest(Base):
     __tablename__ = "static_tests"
-
+    finished = Column(Boolean, nullable=False)
     id = Column(Integer, primary_key=True, index=True)
     index = Column(Integer, nullable=False)
-    pressure_factor = Column(Float, nullable=False)
+    pressure_factor = Column(String, nullable=False)
     pressure = Column(Float, nullable=False)
-
+    duration = Column(Integer, nullable=False)
+    type = Column(String, nullable=False)
     project_id = Column(Integer, ForeignKey('projects.id'))
     project = relationship("Project", back_populates="static_tests")
 
@@ -87,6 +88,7 @@ class Shot(Base):
 class CyclicTest(Base):
     __tablename__ = "cyclic_tests"
 
+    finished = Column(Boolean, nullable=False)
     id = Column(Integer, primary_key=True, index=True)
     index = Column(Integer, nullable=False)
     type = Column(String, nullable=False)

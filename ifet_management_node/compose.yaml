@@ -42,8 +42,6 @@ services:
       DATABASE_URL: "postgresql://user:password@db:5432/report_db"
     ports:
       - '8000:8000'
-    volumes:
-      - ./src/management_service/app/populate_db.py:/app/app/populate_db.py
     depends_on:
       - db
     restart: always

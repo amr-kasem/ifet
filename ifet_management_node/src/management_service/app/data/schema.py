@@ -14,12 +14,21 @@ class DeflectionSchema(DeflectionCreateSchema):
         orm_mode = True
 
 class StaticTestCreateSchema(BaseModel):
-    pressure_factor: float
+    pressure_factor: str
     pressure: float
     index: int
+    duration: int
+    type: str
+
+class StaticTestUpdateSchema(BaseModel):
+    index: int
+    duration: int
+    pressure: float
+
 class StaticTestSchema(StaticTestCreateSchema):
     id: int
     deflections: List[DeflectionSchema]
+    finished: bool
     class Config:
         orm_mode = True
         
@@ -65,8 +74,15 @@ class CyclicTestCreateSchema(BaseModel):
     low_pressure: float
     high_pressure: float
     
+class CyclicTestUpdateSchema(BaseModel):
+    index: int
+    cycles: int
+    low_pressure: float
+    high_pressure: float
+    
 class CyclicTestSchema(CyclicTestCreateSchema):
     id: int
+    finished: bool
     index: int
     deflection: Optional[float]
     permanent_set: Optional[float]

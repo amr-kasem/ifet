@@ -1,5 +1,5 @@
 
-from app.models import Base
+from app.data.models import Base
 
     
 
