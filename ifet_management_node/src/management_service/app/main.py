@@ -32,7 +32,7 @@ app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],  # Frontend origin
     allow_credentials=True,
-    allow_methods=["*"],  # Allow all HTTP methods (POST, GET, etc.)
+    allow_methods=["GET","POST","PUT"],  # Allow all HTTP methods (POST, GET, etc.)
     allow_headers=["*"],  # Allow all headers
 )
 
@@ -184,14 +184,14 @@ def update_project(project_id: int, project_data: ProjectCreateSchema, db: Sessi
 
 
 
-@app.patch("/projects/{project_id}/cyclic_tests", response_model=ProjectSchema)
+@app.put("/projects/{project_id}/cyclic_tests", response_model=ProjectSchema)
 def update_cyclic_tests(project_id: int, cyclic_tests_data: List[CyclicTestUpdateSchema], db: Session = Depends(get_db)):
     db_project = db.query(Project).filter(Project.id == project_id).first()
     if not db_project:
         raise HTTPException(status_code=404, detail="Project not found")
     # Update cyclic tests
     for cyclic_test_data in cyclic_tests_data:
-        cyclic_test = db.query(CyclicTest).filter(CyclicTest.id == cyclic_test_data.id).first()
+        cyclic_test = db.query(CyclicTest).filter(CyclicTest.project_id == project_id, CyclicTest.index == cyclic_test_data.index).first()
         if cyclic_test and not cyclic_test.finished:
             cyclic_test.type = cyclic_test_data.type
             cyclic_test.cycles = cyclic_test_data.cycles
@@ -213,7 +213,7 @@ def update_cyclic_tests(project_id: int, cyclic_tests_data: List[CyclicTestUpdat
     db.refresh(db_project)
     return db_project
 
-@app.patch("/projects/{project_id}/static_tests", response_model=ProjectSchema)
+@app.put("/projects/{project_id}/static_tests", response_model=ProjectSchema)
 def update_static_tests(project_id: int, static_tests_data: List[StaticTestUpdateSchema], db: Session = Depends(get_db)):
     db_project = db.query(Project).filter(Project.id == project_id).first()
     if not db_project:
@@ -221,7 +221,7 @@ def update_static_tests(project_id: int, static_tests_data: List[StaticTestUpdat
 
     # Update static tests
     for static_test_data in static_tests_data:
-        static_test = db.query(StaticTest).filter(StaticTest.id == static_test_data.id).first()
+        static_test : StaticTest = db.query(StaticTest).filter(StaticTest.project_id == project_id, StaticTest.index == static_test_data.index).first()
         if static_test and not static_test.finished:
             static_test.pressure_factor = static_test_data.pressure_factor
             static_test.pressure = static_test_data.pressure

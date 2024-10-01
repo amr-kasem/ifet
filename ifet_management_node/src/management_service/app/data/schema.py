@@ -21,6 +21,8 @@ class StaticTestCreateSchema(BaseModel):
     type: str
 
 class StaticTestUpdateSchema(BaseModel):
+    # id: int
+    type: str
     index: int
     duration: int
     pressure: float
@@ -75,13 +77,15 @@ class CyclicTestCreateSchema(BaseModel):
     high_pressure: float
     
 class CyclicTestUpdateSchema(BaseModel):
+    # id: int
     index: int
     cycles: int
+    type: str
     low_pressure: float
     high_pressure: float
     
 class CyclicTestSchema(CyclicTestCreateSchema):
-    id: int
+    # id: int
     finished: bool
     index: int
     deflection: Optional[float]
